@@ -18,7 +18,7 @@ public class Game{
         int numberOfTries = 0;
         FancyConsole();
         WriteLine($"Word you need to guess: {EncodedWord}");
-        WriteLine($"Word you need to guess(deciphered): {WordToGuess}");
+        WriteLine($"Word you need to guess(deciphered): {WordToGuess}\n");
 
         while(numberOfTries < 6)
         {
@@ -33,7 +33,7 @@ public class Game{
                 WriteLine($"You've only got {6 - numberOfTries} tries left, try harder!");
             }
             WriteLine(EncodedWord);
-            WriteLine($"Letters already used:{UsedLetters}");
+            WriteLine($"Characters already used:{UsedLetters}\n");
         }
         WriteLine($"The word was {WordToGuess}");
         return false;
@@ -75,13 +75,13 @@ public class Game{
 
     private char ReadGuess()
     {
-        WriteLine("Please write one letter to guess");
         bool isGoodGuess = false;
         string guess = String.Empty;
         while (!isGoodGuess)
         {
+            WriteLine("Please write one letter (not a number or something else, you sly fox) to guess");
             guess = ReadLine().ToLower();
-            if (guess.Length == 1)
+            if (guess.Length == 1 && Char.IsLetter(Convert.ToChar(guess)))
                 isGoodGuess = true;
         }
         return Convert.ToChar(guess);
@@ -90,6 +90,8 @@ public class Game{
     private string PickWord()
     {
         Random random = new Random();
+        try
+        {
         int length = File.ReadAllLines(_filepath).Length;
         int lineToFind = random.Next(0, length+1);
         using(var reader = new StreamReader(_filepath))
@@ -104,6 +106,11 @@ public class Game{
                         return word;
                     }
                 }
+        }
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"Error while working with file: {e.Message}");
         }
         return string.Empty;
     }
@@ -128,6 +135,6 @@ public class Game{
             ForegroundColor = ConsoleColor.DarkBlue;
             Write("6 tries ");
             ForegroundColor = ConsoleColor.DarkRed;
-            WriteLine("to guess it or you will die (but try not to), good luck with guessing!");
+            WriteLine("to guess it or you will die (but try not to), good luck with guessing!\n");
     }
 }
